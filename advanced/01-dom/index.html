@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM Learning Playground</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --bg: #f5f7fb;
+            --panel: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --accent: #2563eb;
+            --accent-soft: #dbeafe;
+            --border: #d1d5db;
+            --success: #059669;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(180deg, var(--bg), #eef2ff);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header,
+        main,
+        footer {
+            width: min(1100px, calc(100% - 32px));
+            margin: 0 auto;
+        }
+
+        header { padding: 32px 0 20px; }
+
+        .hero {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(209, 213, 219, 0.7);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 12px 30px rgba(37, 99, 235, 0.08);
+        }
+
+        .hero h1 {
+            margin: 0 0 8px;
+            font-size: clamp(2rem, 4vw, 3rem);
+        }
+
+        .hero p { margin: 0; color: var(--muted); }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            padding-bottom: 32px;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+        }
+
+        .card h2 { margin: 0 0 12px; font-size: 1.15rem; }
+
+        .stack { display: grid; gap: 12px; }
+
+        .box {
+            border: 1px dashed var(--border);
+            border-radius: 14px;
+            padding: 14px;
+            background: #f9fafb;
+        }
+
+        .demo-title { margin: 0 0 8px; color: var(--muted); font-size: 0.92rem; }
+
+        .btn {
+            appearance: none;
+            border: 0;
+            border-radius: 999px;
+            background: var(--accent);
+            color: white;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: transform 0.15s ease, opacity 0.15s ease;
+        }
+
+        .btn:hover { transform: translateY(-1px); opacity: 0.95; }
+
+        .btn.secondary { background: #111827; }
+        .btn.success { background: var(--success); }
+
+        .chip-list,
+        .todo-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            gap: 8px;
+        }
+
+        .chip-list li,
+        .todo-list li {
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: var(--accent-soft);
+        }
+
+        .todo-list li.done,
+        #intermediateTaskList li.done {
+            text-decoration: line-through;
+            opacity: 0.65;
+        }
+
+        #intermediateTaskList li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: #e5e7eb;
+        }
+
+        .mini-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .mini-btn {
+            border: 0;
+            border-radius: 999px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: white;
+            background: #2563eb;
+        }
+
+        .mini-btn.delete {
+            background: #dc2626;
+        }
+
+        .nested {
+            border-style: solid;
+            border-width: 2px;
+            border-color: #bfdbfe;
+            background: #eff6ff;
+        }
+
+        .highlight {
+            background: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+
+        .notice {
+            padding: 12px 14px;
+            border-left: 4px solid var(--accent);
+            background: #eff6ff;
+            border-radius: 12px;
+            color: #1d4ed8;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font: inherit;
+            background: white;
+        }
+
+        textarea { min-height: 90px; resize: vertical; }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .output {
+            min-height: 42px;
+            padding: 12px;
+            border-radius: 12px;
+            background: #111827;
+            color: #e5e7eb;
+            font-family: Consolas, Monaco, monospace;
+            white-space: pre-wrap;
+        }
+
+        footer {
+            padding: 0 0 28px;
+            color: var(--muted);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="hero">
+            <h1>DOM Learning Playground</h1>
+            <p>Use this file with <code>main.js</code> to study selectors, traversal, manipulation, events, and forms.</p>
+        </div>
+    </header>
+
+    <main class="grid">
+        <section class="card">
+            <h2>1. Selection</h2>
+            <div id="myId" class="box">
+                <h3>Intro to DOM</h3>
+                <p class="myClass">This paragraph can be selected in many ways.</p>
+                <p class="myClass">This is another paragraph with the same class.</p>
+            </div>
+            <div class="box">
+                <p class="demo-title">Anchor elements</p>
+                <a href="https://www.google.com" target="_blank" rel="noreferrer">Google</a><br>
+                <a href="https://www.facebook.com" target="_blank" rel="noreferrer">Facebook</a><br>
+                <a href="https://www.twitter.com" target="_blank" rel="noreferrer">Twitter</a>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>2. Content and Attributes</h2>
+            <div class="box">
+                <p id="contentTarget">This text will be changed by JavaScript.</p>
+                <p><span class="highlight">textContent</span>, <span class="highlight">innerText</span>, and <span class="highlight">innerHTML</span> are all important.</p>
+            </div>
+            <div class="box">
+                <img id="domImage" src="https://via.placeholder.com/320x180.png?text=DOM+Image" alt="DOM example image" width="100%">
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>3. Create, Add, Remove</h2>
+            <div class="stack">
+                <div class="toolbar">
+                    <button class="btn" id="addTodoBtn" type="button">Add todo</button>
+                    <button class="btn secondary" id="removeTodoBtn" type="button">Remove last</button>
+                    <button class="btn success" id="resetTodosBtn" type="button">Reset list</button>
+                </div>
+                <ul class="todo-list" id="todoList">
+                    <li>Learn DOM selection</li>
+                    <li>Practice DOM traversal</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>4. Events</h2>
+            <div class="stack">
+                <button class="btn" id="changeThemeBtn" type="button">Change message</button>
+                <div class="notice" id="messageBox">Click the button to trigger a DOM event.</div>
+                <label>
+                    Type something:
+                    <input id="typingInput" type="text" placeholder="Your typing appears below">
+                </label>
+                <div class="output" id="typingOutput">Waiting for input...</div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>5. Forms</h2>
+            <form id="learningForm" class="stack">
+                <label>
+                    Your name:
+                    <input id="nameInput" type="text" name="name" placeholder="Enter your name">
+                </label>
+                <label>
+                    Choose a topic:
+                    <select id="topicSelect" name="topic">
+                        <option value="selectors">Selectors</option>
+                        <option value="events">Events</option>
+                        <option value="manipulation">Manipulation</option>
+                    </select>
+                </label>
+                <label>
+                    Notes:
+                    <textarea id="notesInput" name="notes" placeholder="Write what you learned"></textarea>
+                </label>
+                <button class="btn" type="submit">Save form data</button>
+            </form>
+            <div class="output" id="formOutput">Form data will appear here.</div>
+        </section>
+
+        <section class="card">
+            <h2>6. Traversal</h2>
+            <div class="box" id="traversalBox">
+                <p>Parent, children, siblings, firstElementChild, lastElementChild.</p>
+                <ul class="chip-list">
+                    <li>Parent node</li>
+                    <li>Child node</li>
+                    <li>Sibling node</li>
+                </ul>
+            </div>
+            <p class="demo-title">Open the console to see traversal examples.</p>
+        </section>
+
+        <section class="card">
+            <h2>7. Intermediate DOM Lab</h2>
+
+            <div class="stack box">
+                <p class="demo-title">A) Event delegation + data attributes + closest()</p>
+                <label>
+                    Task name:
+                    <input id="intermediateTaskInput" type="text" placeholder="Type task and press Add or Enter">
+                </label>
+                <div class="toolbar">
+                    <button class="btn" id="addIntermediateTaskBtn" type="button">Add task</button>
+                    <button class="btn secondary" id="clearIntermediateTasksBtn" type="button">Clear all</button>
+                </div>
+                <ul id="intermediateTaskList" class="todo-list"></ul>
+            </div>
+
+            <div class="stack box">
+                <p class="demo-title">B) Event propagation (capturing and bubbling)</p>
+                <div id="outerBox" class="box nested">
+                    Outer box
+                    <div id="middleBox" class="box nested">
+                        Middle box
+                        <button id="innerBoxBtn" class="btn" type="button">Click for propagation order</button>
+                    </div>
+                </div>
+                <div class="output" id="eventLog">Event log will appear here.</div>
+            </div>
+        </section>
+    </main>
+
+    <template id="taskTemplate">
+        <li data-id="">
+            <span data-role="text"></span>
+            <div class="mini-actions">
+                <button class="mini-btn" data-action="toggle" type="button">Toggle</button>
+                <button class="mini-btn delete" data-action="delete" type="button">Delete</button>
+            </div>
+        </li>
+    </template>
+
+    <script src="main.js"></script>
+    <footer>
+        Built for learning the DOM step by step.
+    </footer>
+</body>
+</html>
